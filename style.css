@@ -47,8 +47,9 @@ nav {
     width: 300px;
     height: 100%;
     left: 0px;
-    background-color: #0e0e0e;
+    background: radial-gradient(circle at 0 100%, #181818 0%, #0e0e0e 100%);
     border-right: 1px solid #222222;
+    box-shadow: #ffffff10 0px 0px 5px 0px;
     z-index: 2;
 }
 
@@ -62,5 +63,77 @@ main {
     width: calc(100% - 300px);
     height: 100%;
     left: 300px;
-    background-color: #111111;
+
+    --gridsize: 40px;
+    --plus-thickness: 2px;
+    --plus-length: 1px;
+
+    background-color: rgb(12, 12, 12);
+    background-image: radial-gradient(
+            #ffffff10 var(--plus-thickness),
+            transparent var(--plus-thickness)
+        ),
+        linear-gradient(
+            to right,
+            transparent calc(50% - var(--plus-length)),
+            #ffffff05 calc(50% - var(--plus-length))
+                calc(50% + var(--plus-length)),
+            transparent calc(50% + var(--plus-length))
+        ),
+        linear-gradient(
+            to bottom,
+            transparent calc(50% - var(--plus-length)),
+            #ffffff05 calc(50% - var(--plus-length))
+                calc(50% + var(--plus-length)),
+            transparent calc(50% + var(--plus-length))
+        );
+    background-size: var(--gridsize) var(--gridsize);
+}
+
+#overlay {
+    position: absolute;
+    width: auto;
+    padding: 0 5px;
+    height: 50px;
+    background-color: #0e0e0e;
+    border: 1px solid #222222;
+    border-radius: 12px;
+    box-shadow: #ffffff10 0px 2px 5px 0px;
+    bottom: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 3;
+}
+
+#overlay > i {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #ffffff00;
+    transition: 250ms;
+}
+
+#overlay > i:hover {
+    background-color: #ffffff05;
+    border-radius: 8px;
+}
+
+#overlay > i.disabled {
+    opacity: 0.25;
+}
+
+#play {
+    color: #00ee8b;
+}
+#stop {
+    color: #ff6a6a;
+}
+#pause {
+    color: #ffd95e;
+}
+#next {
+    color: #3385ff;
 }
