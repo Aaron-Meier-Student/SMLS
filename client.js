@@ -40,6 +40,11 @@ function tick() {
         if (!component.functionality) continue;
         const inputs = [];
         for (const input of component.inputs) {
+            if (!input.isConnected) continue;
+            if (input.querySelector("input") && input.querySelector("input").type == "text") {
+                inputs.push(input.dataset.cachedValue);
+                continue;
+            }
             inputs.push(Number(input.dataset.cachedValue));
         }
         component.functionality(component.element, inputs);
@@ -63,6 +68,14 @@ async function run() {
             next = false;
         }
     }
+    next = true;
+    playBtn.classList.remove("disabled");
+    stopBtn.classList.add("disabled");
+    for (const component of activeComponents) {
+        component.element.dataset.cachedValue = 0;
+        component.element.dataset.value = 0;
+        component.element.classList.remove("on");
+    }
     ticks = 0;
     ticksTxt.innerText = `${ticks} Ticks`;
 }
@@ -76,14 +89,6 @@ playBtn.addEventListener("click", () => {
 stopBtn.addEventListener("click", () => {
     if (!running) return;
     running = false;
-    next = true;
-    playBtn.classList.remove("disabled");
-    stopBtn.classList.add("disabled");
-    for (const component of activeComponents) {
-        component.element.dataset.cachedValue = 0;
-        component.element.dataset.value = 0;
-        component.element.classList.remove("on");
-    }
 });
 pauseBtn.addEventListener("click", () => {
     paused = !paused;
@@ -175,7 +180,7 @@ function renderWires() {
 
             const angle = (Math.atan2(y2 - y1, x2 - x1) * 180) / Math.PI;
             wire.style.transformOrigin = "0 0";
-            wire.style.transform = `rotate(${angle}deg) translateX(-50%)`;
+            wire.style.transform = `rotate(${angle}deg) translate(-50%, -50%)`;
 
             wire.style.backgroundColor =
                 inputNode.querySelector(".wireNode").style.backgroundColor;
@@ -271,8 +276,13 @@ function placementHandler(inputElement, cloneMe, componentData) {
                 });
             }
             element.addEventListener("contextmenu", (e) => {
-                if (wireMode) return;
+                if (wireMode || running) return;
                 e.preventDefault();
+                for (const component of activeComponents) {
+                    const index = component.inputs.indexOf(element);
+                    if (index === -1) continue;
+                    component.inputs.splice(index, 1);
+                }
                 activeComponents.splice(activeComponents.indexOf(component), 1);
                 element.remove();
             });

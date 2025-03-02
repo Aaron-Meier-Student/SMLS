@@ -76,7 +76,7 @@ const AllComponents = {
         NOT: {
             element: `
                 <div>
-                    <i class="fi fi-sr-not-equal"></i>
+                    <img src="./icons/not-gate.png">
                 </div>
             `,
             functionality: (element, inputs) => {
@@ -153,5 +153,145 @@ const AllComponents = {
             },
         },
     },
-    "Math Components": {},
+    "Math Components": {
+        Add: {
+            element: `
+                <div>
+                    <i class="fi fi-sr-plus"></i>
+                </div>
+            `,
+            functionality: (element, inputs) => {
+                if (inputs == [] || inputs.length < 2) {
+                    element.classList.remove("on");
+                    element.dataset.value = 0;
+                    return;
+                }
+                element.classList.add("on");
+                let total = 0;
+                for (let i = 0; i < inputs.length; i++) {
+                    total += Number(inputs[i]);
+                }
+                element.dataset.value = total;
+            },
+        },
+        Subtract: {
+            element: `
+                <div>
+                    <i class="fi fi-sr-minus"></i>
+                </div>
+            `,
+            functionality: (element, inputs) => {
+                if (inputs == [] || inputs.length < 2) {
+                    element.classList.remove("on");
+                    element.dataset.value = 0;
+                    return;
+                }
+                element.classList.add("on");
+                let total = 0;
+                for (let i = 0; i < inputs.length; i++) {
+                    total -= Number(inputs[i]);
+                }
+                element.dataset.value = total;
+            },
+        },
+        Multiply: {
+            element: `
+                <div>
+                    <i class="fi fi-sr-x"></i>
+                </div>
+            `,
+            functionality: (element, inputs) => {
+                if (inputs == [] || inputs.length < 2) {
+                    element.classList.remove("on");
+                    element.dataset.value = 0;
+                    return;
+                }
+                element.classList.add("on");
+                let total = 1;
+                for (let i = 0; i < inputs.length; i++) {
+                    total *= Number(inputs[i]);
+                }
+                element.dataset.value = total;
+            },
+        },
+        Reciprocal: {
+            element: `
+                <div>
+                    <i class="fi fi-sr-reflect"></i>
+                </div>
+            `,
+            functionality: (element, inputs) => {
+                if (inputs == [] || inputs.length != 1) {
+                    element.classList.remove("on");
+                    element.dataset.value = 0;
+                    return;
+                }
+                element.classList.add("on");
+                element.dataset.value = 1/inputs[0];
+            },
+        },
+        Input: {
+            element: `
+                <div>
+                    <input type="number" placeholder="#">
+                </div>
+            `,
+            functionality: (element, inputs) => {
+                element.dataset.value = element.querySelector("input").value;
+            },
+        }
+    },
+    "Display Components": {
+        Hover: {
+            element: `
+                <div>
+                    <div class="display hover"></div>
+                    <i class="fi fi-sr-mouse"></i>
+                </div>
+            `,
+            functionality: (element, inputs) => {
+                if (inputs == [] || inputs.length != 1) {
+                    element.classList.remove("on");
+                    element.dataset.value = "";
+                    return;
+                }
+                element.classList.add("on");
+                element.querySelector(".display").innerHTML = inputs[0];
+                element.dataset.value = inputs[0];
+            },
+        },
+        Toggle: {
+            element: `
+                <div>
+                    <div class="display hidden"></div>
+                    <i class="fi fi-sr-text"></i>
+                </div>
+            `,
+            onClick: (element) => {
+                element.querySelector(".display").classList.toggle("shown");
+            },
+            functionality: (element, inputs) => {
+                if (inputs == [] || inputs.length != 1) {
+                    element.classList.remove("on");
+                    element.dataset.value = 0;
+                    return;
+                }
+                element.classList.add("on");
+                element.querySelector(".display").innerHTML = inputs[0];
+                element.dataset.value = inputs[0];
+            },
+        }
+    },
+    "Misc Components": {
+        Input: {
+            element: `
+                <div>
+                    <input type="text" placeholder="T">
+                </div>
+            `,
+            functionality: (element, inputs) => {
+                element.dataset.value = element.querySelector("input").value;
+            },
+        }
+    },
 };
