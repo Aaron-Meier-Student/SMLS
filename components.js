@@ -8,7 +8,7 @@ const AllComponents = {
                 </div>
             `,
             functionality: (element, inputs) => {
-                if (inputs == []) {
+                if (inputs == [] || inputs.length < 1) {
                     element.classList.remove("on");
                     element.dataset.value = 0;
                     return;
@@ -49,7 +49,8 @@ const AllComponents = {
             },
         },
         XOR: {
-            description: "Outputs 1 if the number of 1 inputs is odd, 0 otherwise.",
+            description:
+                "Outputs 1 if the number of 1 inputs is odd, 0 otherwise.",
             element: `
                 <div>
                     <img src="./icons/xor-gate.png">
@@ -77,7 +78,8 @@ const AllComponents = {
             },
         },
         NOT: {
-            description: "Outputs 1 if the input is 0, and 0 if the input is 1, 0 otherwise.",
+            description:
+                "Outputs 1 if the input is 0, and 0 if the input is 1, 0 otherwise.",
             element: `
                 <div>
                     <img src="./icons/not-gate.png">
@@ -101,7 +103,8 @@ const AllComponents = {
             },
         },
         Bit: {
-            description: "(OR without Icon) Outputs 1 if any of the inputs are 1, 0 otherwise.",
+            description:
+                "(OR without Icon) Outputs 1 if any of the inputs are 1, 0 otherwise. Can take color input from a string,",
             element: `
                 <div>
                     
@@ -113,19 +116,27 @@ const AllComponents = {
                     element.dataset.value = 0;
                     return;
                 }
+                let enabled = false;
                 for (let i = 0; i < inputs.length; i++) {
+                    if (typeof inputs[i] == "string") {
+                        element.style.backgroundColor = inputs[i];
+                        continue;
+                    }
                     if (inputs[i] > 0) {
                         element.classList.add("on");
                         element.dataset.value = 1;
-                        return;
+                        enabled = true;
                     }
                 }
+                if (enabled) return;
                 element.dataset.value = 0;
+                element.style.backgroundColor = "transparent";
                 element.classList.remove("on");
             },
         },
         Switch: {
-            description: "Outputs 1 if the switch is on, 0 if the switch is off. Click it toggle the switch.",
+            description:
+                "Outputs 1 if the switch is on, 0 if the switch is off. Click it toggle the switch.",
             element: `
                 <div>
                     <i class="fi fi-sr-toggle-on"></i>
@@ -225,7 +236,8 @@ const AllComponents = {
             },
         },
         Reciprocal: {
-            description: "Outputs the reciprocal of the input. Meant to be used for division. (1/x)*5 = 5/x",
+            description:
+                "Outputs the reciprocal of the input. Meant to be used for division. (1/x)*5 = 5/x",
             element: `
                 <div>
                     <i class="fi fi-sr-reflect"></i>
@@ -242,7 +254,8 @@ const AllComponents = {
             },
         },
         Number: {
-            description: "Outputs the number typed into the input, or the number being inputed, 0 otherwise.",
+            description:
+                "Outputs the number typed into the input, or the number being inputed, 0 otherwise.",
             element: `
                 <div>
                     <input type="number" placeholder="#">
@@ -288,7 +301,8 @@ const AllComponents = {
     },
     "Display Components": {
         Hover: {
-            description: "Displays value of the input, can be a number, string, or boolean. Hover over to view the display.",
+            description:
+                "Displays value of the input, can be a number, string, or boolean. Hover over to view the display.",
             element: `
                 <div>
                     <div class="display hover"></div>
@@ -307,7 +321,8 @@ const AllComponents = {
             },
         },
         Toggle: {
-            description: "Displays value of the input, can be a number, string, or boolean. Click to toggle the display.",
+            description:
+                "Displays value of the input, can be a number, string, or boolean. Click to toggle the display.",
             element: `
                 <div>
                     <div class="display hidden"></div>
@@ -331,7 +346,8 @@ const AllComponents = {
     },
     "Misc Components": {
         String: {
-            description: "Outputs the string typed into the input, or the string being inputed, '' otherwise.",
+            description:
+                "Outputs the string typed into the input, or the string being inputed, '' otherwise.",
             element: `
                 <div>
                     <input type="text" placeholder="T">
@@ -342,7 +358,8 @@ const AllComponents = {
             },
         },
         Ticks: {
-            description: "Outputs the number of ticks since the simulation started.",
+            description:
+                "Outputs the number of ticks since the simulation started.",
             element: `
                 <div>
                     <i class="fi fi-sr-clock"></i>
@@ -353,7 +370,8 @@ const AllComponents = {
             },
         },
         Tick: {
-            description: "Only outputs for a single tick once it receives any 1 input.",
+            description:
+                "Only outputs for a single tick once it receives any 1 input.",
             element: `
                 <div>
                     <i class="fi fi-br-circle-1"></i>
@@ -387,7 +405,8 @@ const AllComponents = {
             },
         },
         Memory: {
-            description: "Holds a saved value, can be set by inputting a number or string. Only outputs the saved value. To save a new value, connect a trigger input, this will tell the memory to save the new value being inputed.",
+            description:
+                "Holds a saved value, can be set by inputting a number or string. Only outputs the saved value. To save a new value, connect a trigger input, this will tell the memory to save the new value being inputed.",
             element: `
                 <div>
                     <i class="fi fi-sr-memory"></i>
@@ -417,7 +436,8 @@ const AllComponents = {
             },
         },
         Trigger: {
-            description: "Outputs a boolean, true or false, depending on if any input is greater than 0.",
+            description:
+                "Outputs a boolean, true or false, depending on if any input is greater than 0.",
             element: `
                 <div>
                     <i class="fi fi-sr-flame"></i>
