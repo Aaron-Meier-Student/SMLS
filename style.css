@@ -326,3 +326,36 @@ nav .display.hover:hover, body > .component .display.hover:hover {
 .display.shown {
     opacity: 1;
 }
+
+#details {
+    position: absolute;
+    width: 300px;
+    height: auto;
+    background-color: #0e0e0e;
+    border: 1px solid #222222;
+    border-radius: 12px;
+    box-shadow: #ffffff10 0px 2px 5px 0px;
+    bottom: 15px;
+    left: 315px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    pointer-events: none;
+    opacity: 0;
+    z-index: 3;
+    transition: 100ms;
+}
+#details * {
+    width: 90%;
+    margin: 5px;
+}
+#details h5 {
+    margin-top: 15px;
+}
+#details p {
+    margin-bottom: 15px;
+}
+#details.shown {
+    opacity: 1;
+}

@@ -1,6 +1,7 @@
 const AllComponents = {
     "Basic Components": {
         AND: {
+            description: "Outputs 1 if all inputs are 1, 0 otherwise.",
             element: `
                 <div>
                     <img src="./icons/and-gate.png">
@@ -24,6 +25,7 @@ const AllComponents = {
             },
         },
         OR: {
+            description: "Outputs 1 if any of the inputs are 1, 0 otherwise.",
             element: `
                 <div>
                     <img src="./icons/or-gate.png">
@@ -47,6 +49,7 @@ const AllComponents = {
             },
         },
         XOR: {
+            description: "Outputs 1 if the number of 1 inputs is odd, 0 otherwise.",
             element: `
                 <div>
                     <img src="./icons/xor-gate.png">
@@ -74,6 +77,7 @@ const AllComponents = {
             },
         },
         NOT: {
+            description: "Outputs 1 if the input is 0, and 0 if the input is 1, 0 otherwise.",
             element: `
                 <div>
                     <img src="./icons/not-gate.png">
@@ -97,6 +101,7 @@ const AllComponents = {
             },
         },
         Bit: {
+            description: "(OR without Icon) Outputs 1 if any of the inputs are 1, 0 otherwise.",
             element: `
                 <div>
                     
@@ -120,6 +125,7 @@ const AllComponents = {
             },
         },
         Switch: {
+            description: "Outputs 1 if the switch is on, 0 if the switch is off. Click it toggle the switch.",
             element: `
                 <div>
                     <i class="fi fi-sr-toggle-on"></i>
@@ -133,6 +139,7 @@ const AllComponents = {
             },
         },
         Button: {
+            description: "Outputs 1 for 1 tick when clicked.",
             element: `
                 <div>
                     <i class="fi fi-sr-rec"></i>
@@ -155,6 +162,7 @@ const AllComponents = {
     },
     "Math Components": {
         Add: {
+            description: "Outputs the sum of all the inputs.",
             element: `
                 <div>
                     <i class="fi fi-sr-plus"></i>
@@ -175,6 +183,7 @@ const AllComponents = {
             },
         },
         Subtract: {
+            description: "Outputs the difference of all the inputs.",
             element: `
                 <div>
                     <i class="fi fi-sr-minus"></i>
@@ -195,6 +204,7 @@ const AllComponents = {
             },
         },
         Multiply: {
+            description: "Outputs the product of all the inputs.",
             element: `
                 <div>
                     <i class="fi fi-sr-x"></i>
@@ -215,6 +225,7 @@ const AllComponents = {
             },
         },
         Reciprocal: {
+            description: "Outputs the reciprocal of the input. Meant to be used for division. (1/x)*5 = 5/x",
             element: `
                 <div>
                     <i class="fi fi-sr-reflect"></i>
@@ -231,6 +242,7 @@ const AllComponents = {
             },
         },
         Number: {
+            description: "Outputs the number typed into the input, or the number being inputed, 0 otherwise.",
             element: `
                 <div>
                     <input type="number" placeholder="#">
@@ -249,6 +261,7 @@ const AllComponents = {
             },
         },
         Equal: {
+            description: "Outputs 1 if all the inputs are equal, 0 otherwise.",
             element: `
                 <div>
                     <i class="fi fi-sr-equals"></i>
@@ -275,6 +288,7 @@ const AllComponents = {
     },
     "Display Components": {
         Hover: {
+            description: "Displays value of the input, can be a number, string, or boolean. Hover over to view the display.",
             element: `
                 <div>
                     <div class="display hover"></div>
@@ -293,6 +307,7 @@ const AllComponents = {
             },
         },
         Toggle: {
+            description: "Displays value of the input, can be a number, string, or boolean. Click to toggle the display.",
             element: `
                 <div>
                     <div class="display hidden"></div>
@@ -316,6 +331,7 @@ const AllComponents = {
     },
     "Misc Components": {
         String: {
+            description: "Outputs the string typed into the input, or the string being inputed, '' otherwise.",
             element: `
                 <div>
                     <input type="text" placeholder="T">
@@ -326,6 +342,7 @@ const AllComponents = {
             },
         },
         Ticks: {
+            description: "Outputs the number of ticks since the simulation started.",
             element: `
                 <div>
                     <i class="fi fi-sr-clock"></i>
@@ -336,6 +353,7 @@ const AllComponents = {
             },
         },
         Tick: {
+            description: "Only outputs for a single tick once it receives any 1 input.",
             element: `
                 <div>
                     <i class="fi fi-br-circle-1"></i>
@@ -369,6 +387,7 @@ const AllComponents = {
             },
         },
         Memory: {
+            description: "Holds a saved value, can be set by inputting a number or string. Only outputs the saved value. To save a new value, connect a trigger input, this will tell the memory to save the new value being inputed.",
             element: `
                 <div>
                     <i class="fi fi-sr-memory"></i>
@@ -398,6 +417,7 @@ const AllComponents = {
             },
         },
         Trigger: {
+            description: "Outputs a boolean, true or false, depending on if any input is greater than 0.",
             element: `
                 <div>
                     <i class="fi fi-sr-flame"></i>

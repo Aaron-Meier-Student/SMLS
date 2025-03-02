@@ -318,6 +318,14 @@ for (const [title, components] of Object.entries(AllComponents)) {
         newComponent2.appendChild(wireNode);
         newComponent.appendChild(newName);
         newSection.appendChild(newComponent);
+        newComponent.addEventListener("mouseover", () => {
+            document.querySelector("#details").classList.add("shown");
+            document.querySelector("#details h5").innerText = name;
+            document.querySelector("#details p").innerText = component.description;
+        });
+        newComponent.addEventListener("mouseout", () => {
+            document.querySelector("#details").classList.remove("shown");
+        });
         placementHandler(newComponent, newComponent2, component);
     }
 
