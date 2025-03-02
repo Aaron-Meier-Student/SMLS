@@ -58,6 +58,15 @@ hr {
     opacity: 0.1;
 }
 
+#wireDisplay {
+    position: absolute;
+    width: calc(100% - 300px);
+    height: 100%;
+    left: 300px;
+    z-index: 4;
+    pointer-events: none;
+}
+
 main {
     position: absolute;
     width: calc(100% - 300px);
@@ -93,7 +102,6 @@ main {
 #overlay {
     position: absolute;
     width: auto;
-    padding: 0 5px;
     height: 50px;
     background-color: #0e0e0e;
     border: 1px solid #222222;
@@ -109,20 +117,38 @@ main {
 #overlay > i {
     width: 40px;
     height: 40px;
+    background-color: #ffffff00;
+    border-radius: 8px;
+    margin: 5px;
+    transition: 150ms;
+}
+
+i.fi {
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: #ffffff00;
-    transition: 250ms;
 }
 
-#overlay > i:hover {
+#overlay > i:not(.disabled):hover {
     background-color: #ffffff05;
-    border-radius: 8px;
+    cursor: pointer;
+}
+
+#overlay > i:not(.disabled):active {
+    scale: 0.9;
+}
+
+#overlay i.toggled {
+    background-color: #ffffff10 !important;
 }
 
 #overlay > i.disabled {
     opacity: 0.25;
+}
+
+#overlay > hr {
+    width: 0;
+    height: 60%;
 }
 
 #play {
@@ -136,4 +162,100 @@ main {
 }
 #next {
     color: #3385ff;
+}
+#ticks {
+    position: absolute;
+    top: -32px;
+    font-size: 10px;
+    opacity: 0.5;
+}
+
+nav > div {
+    position: relative;
+    width: calc(100% - 30px);
+    padding: 15px;
+}
+
+nav h5 {
+    margin: 0 0 5px;
+}
+
+nav section {
+    border-top: 1px solid #222222;
+    width: calc(100% - 30px);
+    padding: 15px;
+    left: 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: start;
+}
+
+nav .component {
+    position: relative;
+    margin: 5px 5px 15px;
+    cursor: pointer;
+}
+
+body > .component {
+    transform: translate(-50%, -50%);
+}
+
+nav .component h6 {
+    position: absolute;
+    top: 20px;
+}
+
+.component {
+    position: absolute;
+    min-width: 38px;
+    min-height: 38px;
+    max-width: 38px;
+    max-height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #ffffff;
+}
+
+.on {
+    background-color: #3385ff;
+}
+
+.component > div:not(.wireNode) {
+    width: 75%;
+    height: 75%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.component img {
+    contain: content;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.wireNode {
+    visibility: hidden;
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background-color: #00ffaa;
+    cursor: pointer;
+    transition: 100ms;
+}
+.wireNode.visible {
+   visibility: visible;
+}
+.wireNode:hover {
+    scale: 1.1;
+}
+.wireNode:active {
+    scale: 0.9;
+}
+.wireNode.selected {
+    border: 6px solid #3c9e86;
 }
