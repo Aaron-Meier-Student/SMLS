@@ -227,19 +227,51 @@ const AllComponents = {
                     return;
                 }
                 element.classList.add("on");
-                element.dataset.value = 1/inputs[0];
+                element.dataset.value = 1 / inputs[0];
             },
         },
-        Input: {
+        Number: {
             element: `
                 <div>
                     <input type="number" placeholder="#">
                 </div>
             `,
             functionality: (element, inputs) => {
-                element.dataset.value = element.querySelector("input").value;
+                if (inputs == [] || inputs.length < 1) {
+                    element.classList.remove("on");
+                    element.dataset.value =
+                        element.querySelector("input").value;
+                    return;
+                }
+                element.classList.add("on");
+                element.dataset.value = inputs[0];
+                element.querySelector("input").value = inputs[0];
             },
-        }
+        },
+        Equal: {
+            element: `
+                <div>
+                    <i class="fi fi-sr-equals"></i>
+                </div>
+            `,
+            functionality: (element, inputs) => {
+                if (inputs == [] || inputs.length < 2) {
+                    element.classList.remove("on");
+                    element.dataset.value = 0;
+                    return;
+                }
+                let allEqual = true;
+                const first = inputs[0];
+                for (let i = 1; i < inputs.length; i++) {
+                    if (inputs[i] != first) {
+                        allEqual = false;
+                        break;
+                    }
+                }
+                element.classList[allEqual ? "add" : "remove"]("on");
+                element.dataset.value = allEqual ? 1 : 0;
+            },
+        },
     },
     "Display Components": {
         Hover: {
@@ -280,10 +312,10 @@ const AllComponents = {
                 element.querySelector(".display").innerHTML = inputs[0];
                 element.dataset.value = inputs[0];
             },
-        }
+        },
     },
     "Misc Components": {
-        Input: {
+        String: {
             element: `
                 <div>
                     <input type="text" placeholder="T">
@@ -292,6 +324,101 @@ const AllComponents = {
             functionality: (element, inputs) => {
                 element.dataset.value = element.querySelector("input").value;
             },
-        }
+        },
+        Ticks: {
+            element: `
+                <div>
+                    <i class="fi fi-sr-clock"></i>
+                </div>
+            `,
+            functionality: (element, inputs) => {
+                element.dataset.value = ticks + 1;
+            },
+        },
+        Tick: {
+            element: `
+                <div>
+                    <i class="fi fi-br-circle-1"></i>
+                </div>
+            `,
+            functionality: (element, inputs) => {
+                if (!element.dataset.value2) {
+                    element.dataset.value2 = 0;
+                }
+                if (
+                    inputs == [] ||
+                    inputs.length < 1 ||
+                    (element.dataset.value2 == 1 && element.dataset.value == 1)
+                ) {
+                    element.classList.remove("on");
+                    element.dataset.value = 0;
+                    return;
+                }
+                for (let i = 0; i < inputs.length; i++) {
+                    if (inputs[i] > 0) {
+                        if (element.dataset.value2 == 0) {
+                            element.classList.add("on");
+                            element.dataset.value = 1;
+                        }
+                        element.dataset.value2 = 1;
+                        return;
+                    }
+                }
+                element.dataset.value2 = 0;
+                element.dataset.value = 0;
+            },
+        },
+        Memory: {
+            element: `
+                <div>
+                    <i class="fi fi-sr-memory"></i>
+                </div>
+            `,
+            functionality: (element, inputs) => {
+                if (inputs == [] || inputs.length != 2) {
+                    element.classList.remove("on");
+                    element.dataset.value = element.dataset.value;
+                    return;
+                }
+                let value, trigger;
+                for (let i = 0; i < inputs.length; i++) {
+                    if (inputs[i] === "true" || inputs[i] === "false") {
+                        trigger = inputs[i] === "true" ? true : false;
+                    } else {
+                        value = inputs[i];
+                    }
+                }
+                if (!value || !trigger) {
+                    element.classList.remove("on");
+                    element.dataset.value = element.dataset.value;
+                    return;
+                }
+                element.classList.add("on");
+                element.dataset.value = value;
+            },
+        },
+        Trigger: {
+            element: `
+                <div>
+                    <i class="fi fi-sr-flame"></i>
+                </div>
+            `,
+            functionality: (element, inputs) => {
+                if (inputs == [] || inputs.length < 1) {
+                    element.classList.remove("on");
+                    element.dataset.trigger = false;
+                    return;
+                }
+                for (let i = 0; i < inputs.length; i++) {
+                    if (inputs[i] > 0) {
+                        element.classList.add("on");
+                        element.dataset.trigger = true;
+                        return;
+                    }
+                }
+                element.classList.remove("on");
+                element.dataset.trigger = false;
+            },
+        },
     },
 };

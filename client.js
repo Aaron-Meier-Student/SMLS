@@ -41,6 +41,10 @@ function tick() {
         const inputs = [];
         for (const input of component.inputs) {
             if (!input.isConnected) continue;
+            if (input.dataset.trigger) {
+                inputs.push(input.dataset.trigger);
+                continue;
+            }
             if (input.querySelector("input") && input.querySelector("input").type == "text") {
                 inputs.push(input.dataset.cachedValue);
                 continue;
