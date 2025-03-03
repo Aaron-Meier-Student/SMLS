@@ -1,7 +1,7 @@
 class Component {
-    constructor({ element, values, sepValues, functions, position }) {
+    constructor({ element, values, functions, position }) {
         this.element = element;
-        this.values = { ...(sepValues ? sepValues : values) };
+        this.values = { ...values };
         this.nextValues = { ...values };
         this.position = position;
         this.inputs = [];
@@ -23,7 +23,7 @@ class Component {
             if (functions.beforeTick) functions.beforeTick(this);
         };
         this.onEnd = () => {
-            this.values = { ...(sepValues ? sepValues : values) };
+            this.values = { ...values };
             this.nextValues = { ...values };
             this.element.style.backgroundColor = "transparent";
         }
