@@ -35,26 +35,12 @@ async function sleep(ms) {
     return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-function tick() {
+async function tick() {
     for (const component of activeComponents) {
-        if (!component.functionality) continue;
-        const inputs = [];
-        for (const input of component.inputs) {
-            if (!input.isConnected) continue;
-            if (input.dataset.trigger) {
-                inputs.push(input.dataset.trigger);
-                continue;
-            }
-            if (input.querySelector("input") && input.querySelector("input").type == "text") {
-                inputs.push(input.dataset.cachedValue);
-                continue;
-            }
-            inputs.push(Number(input.dataset.cachedValue));
-        }
-        component.functionality(component.element, inputs);
+        component.beforeTick();
     }
     for (const component of activeComponents) {
-        component.element.dataset.cachedValue = component.element.dataset.value;
+        component.onTick();
     }
 }
 
@@ -75,11 +61,6 @@ async function run() {
     next = true;
     playBtn.classList.remove("disabled");
     stopBtn.classList.add("disabled");
-    for (const component of activeComponents) {
-        component.element.dataset.cachedValue = 0;
-        component.element.dataset.value = 0;
-        component.element.classList.remove("on");
-    }
     ticks = 0;
     ticksTxt.innerText = `${ticks} Ticks`;
 }
@@ -123,7 +104,7 @@ function clickNode(e) {
             if (component.element === e.target.parentElement) {
                 let found = false;
                 component.inputs.forEach((input) => {
-                    if (input === selectedNode) {
+                    if (input.element === selectedNode) {
                         found = true;
                         component.inputs.splice(
                             component.inputs.indexOf(input),
@@ -135,7 +116,7 @@ function clickNode(e) {
                     if (component2 === component) continue;
                     if (component2.element !== selectedNode) continue;
                     component2.inputs.forEach((input) => {
-                        if (input === e.target.parentElement) {
+                        if (input.element === e.target.parentElement) {
                             found = true;
                             component2.inputs.splice(
                                 component2.inputs.indexOf(input),
@@ -145,7 +126,15 @@ function clickNode(e) {
                     });
                 }
                 if (!found) {
-                    component.inputs.push(selectedNode);
+                    let selectedComponent;
+                    for (const component2 of activeComponents) {
+                        if (component2.element === selectedNode) {
+                            selectedComponent = component2;
+                            break;
+                        }
+                    }
+                    if (selectedComponent)
+                        component.inputs.push(selectedComponent);
                 }
                 break;
             }
@@ -163,9 +152,16 @@ function renderWires() {
     wireDisplay.innerHTML = "";
 
     for (const component of activeComponents) {
-        for (const inputNode of component.inputs) {
+        for (const input of component.inputs) {
+            const inputNode = input.element;
             const componentNode = component.element;
-            if (!inputNode || !inputNode.parentElement || !componentNode || !componentNode.parentElement) continue;
+            if (
+                !inputNode ||
+                !inputNode.parentElement ||
+                !componentNode ||
+                !componentNode.parentElement
+            )
+                continue;
 
             const wire = document.createElement("div");
 
@@ -181,6 +177,7 @@ function renderWires() {
             wire.style.top = `${(y1 + y2) / 2}px`;
             wire.style.width = `${width}px`;
             wire.style.height = "5px";
+            wire.style.borderRadius = "15px"
 
             const angle = (Math.atan2(y2 - y1, x2 - x1) * 180) / Math.PI;
             wire.style.transformOrigin = "0 0";
@@ -220,10 +217,8 @@ wireBtn.addEventListener("click", () => {
 
 function placementHandler(inputElement, cloneMe, componentData) {
     inputElement.addEventListener("mousedown", (e) => {
-        if (wireMode) return;
+        if (wireMode || running) return;
         const element = cloneMe ? cloneMe.cloneNode(true) : inputElement;
-        element.dataset.value = 0;
-        element.dataset.cachedValue = 0;
         element.querySelector(".wireNode").style.backgroundColor =
             generateRandomColor();
         document.body.appendChild(element);
@@ -242,7 +237,6 @@ function placementHandler(inputElement, cloneMe, componentData) {
         element.addEventListener("mouseup", (e) => {
             if (placed) return;
             placed = true;
-            document.body.removeChild(element);
             const gridX = Math.floor(
                 (e.clientX - mainGrid.offsetLeft + 20) / gridSize
             );
@@ -262,23 +256,29 @@ function placementHandler(inputElement, cloneMe, componentData) {
                     return;
                 }
             }
-            const component = {
-                element: element,
+            const component = new Component({
+                element,
+                values: componentData.values,
+                functions: componentData.functions,
                 position: { x: gridX, y: gridY },
-                inputs: [],
-                functionality: componentData.functionality,
-            };
+            });
             activeComponents.push(component);
             element.style.left = `${gridX * gridSize - 20}px`;
             element.style.top = `${gridY * gridSize - 20}px`;
 
-            if (componentData.onClick) {
+            if (componentData.functions.onClick) {
                 element.style.cursor = "pointer";
                 element.addEventListener("click", (e) => {
                     if (e.target.classList.contains("wireNode")) return;
-                    componentData.onClick(element);
+                    component.onClick();
                 });
             }
+            element.addEventListener("mouseover", (e) => {
+                component.onHover(true);
+            });
+            element.addEventListener("mouseout", (e) => {
+                component.onHover(false);
+            });
             element.addEventListener("contextmenu", (e) => {
                 if (wireMode || running) return;
                 e.preventDefault();
@@ -297,39 +297,42 @@ function placementHandler(inputElement, cloneMe, componentData) {
     });
 }
 
-for (const [title, components] of Object.entries(AllComponents)) {
-    const newDiv = document.createElement("div");
-    const newTitle = document.createElement("h5");
-    const newSection = document.createElement("section");
+for (const components of data_components) {
+    const groupContianer = document.createElement("div");
+    const groupTitle = document.createElement("h5");
+    const groupSection = document.createElement("section");
 
-    newTitle.innerText = title;
+    groupTitle.innerText = components.title;
 
-    for (const [name, component] of Object.entries(components)) {
-        const newComponent = document.createElement("div");
-        const newComponent2 = document.createElement("div");
+    for (const component of components.components) {
+        const navigationNode = document.createElement("div");
+        const cloneableNode = document.createElement("div");
         const wireNode = document.createElement("div");
-        const newName = document.createElement("h6");
-        newName.innerText = name;
+        const navigationTitle = document.createElement("h6");
+
+        navigationTitle.innerText = component.display.title;
         wireNode.classList.add("wireNode");
-        newComponent.classList.add("component");
-        newComponent.innerHTML = component.element;
-        newComponent2.classList.add("component");
-        newComponent2.innerHTML = component.element;
-        newComponent2.appendChild(wireNode);
-        newComponent.appendChild(newName);
-        newSection.appendChild(newComponent);
-        newComponent.addEventListener("mouseover", () => {
+        navigationNode.classList.add("component");
+        navigationNode.innerHTML = component.display.element;
+        cloneableNode.classList.add("component");
+        cloneableNode.innerHTML = component.display.element;
+        cloneableNode.appendChild(wireNode);
+        navigationNode.appendChild(navigationTitle);
+        groupSection.appendChild(navigationNode);
+        navigationNode.addEventListener("mouseover", () => {
             document.querySelector("#details").classList.add("shown");
-            document.querySelector("#details h5").innerText = name;
-            document.querySelector("#details p").innerText = component.description;
+            document.querySelector("#details h5").innerText =
+                component.display.title;
+            document.querySelector("#details p").innerText =
+                component.display.description;
         });
-        newComponent.addEventListener("mouseout", () => {
+        navigationNode.addEventListener("mouseout", () => {
             document.querySelector("#details").classList.remove("shown");
         });
-        placementHandler(newComponent, newComponent2, component);
+        placementHandler(navigationNode, cloneableNode, component);
     }
 
-    newDiv.appendChild(newTitle);
-    newDiv.appendChild(newSection);
-    componentNav.appendChild(newDiv);
+    groupContianer.appendChild(groupTitle);
+    groupContianer.appendChild(groupSection);
+    componentNav.appendChild(groupContianer);
 }

@@ -65,6 +65,7 @@ hr {
     left: 300px;
     z-index: 4;
     pointer-events: none;
+    z-index: 100;
 }
 
 main {
@@ -97,6 +98,7 @@ main {
             transparent calc(50% + var(--plus-length))
         );
     background-size: var(--gridsize) var(--gridsize);
+    z-index: 10;
 }
 
 #overlay {
@@ -111,7 +113,7 @@ main {
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 3;
+    z-index: 200;
 }
 
 #overlay > i {
@@ -251,10 +253,6 @@ input[type="number"]::-webkit-inner-spin-button {
 
 input[type="number"] {
     -moz-appearance: textfield;
-}
-
-.on {
-    background-color: #3385ff;
 }
 
 .component > div:not(.wireNode) {
