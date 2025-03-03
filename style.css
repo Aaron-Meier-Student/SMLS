@@ -1,3 +1,11 @@
+@font-face {
+    font-family: 'FS-Segment';
+    src: url('./fs-sevegment.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+
 html,
 body {
     margin: 0;
@@ -273,6 +281,14 @@ input[type="number"] {
     pointer-events: none;
 }
 
+.component h4 {
+    position: absolute;
+    left: 11.5px;
+    font-family: 'FS-Segment';
+    font-weight: 100;
+    font-size: 25px;
+}
+
 .wireNode {
     visibility: hidden;
     position: absolute;
@@ -343,7 +359,7 @@ nav .display.hover:hover, body > .component .display.hover:hover {
     flex-direction: column;
     pointer-events: none;
     opacity: 0;
-    z-index: 3;
+    z-index: 300;
     transition: 100ms;
 }
 #details * {
