@@ -1,464 +1,833 @@
-const AllComponents = {
-    "Basic Components": {
-        AND: {
-            description: "Outputs 1 if all inputs are 1, 0 otherwise.",
-            element: `
-                <div>
-                    <img src="./icons/and-gate.png">
-                </div>
-            `,
-            functionality: (element, inputs) => {
-                if (inputs == [] || inputs.length < 1) {
-                    element.classList.remove("on");
-                    element.dataset.value = 0;
-                    return;
-                }
-                for (let i = 0; i < inputs.length; i++) {
-                    if (inputs[i] < 1) {
-                        element.classList.remove("on");
-                        element.dataset.value = 0;
-                        return;
-                    }
-                }
-                element.dataset.value = 1;
-                element.classList.add("on");
-            },
-        },
-        OR: {
-            description: "Outputs 1 if any of the inputs are 1, 0 otherwise.",
-            element: `
-                <div>
-                    <img src="./icons/or-gate.png">
-                </div>
-            `,
-            functionality: (element, inputs) => {
-                if (inputs == []) {
-                    element.classList.remove("on");
-                    element.dataset.value = 0;
-                    return;
-                }
-                for (let i = 0; i < inputs.length; i++) {
-                    if (inputs[i] > 0) {
-                        element.classList.add("on");
-                        element.dataset.value = 1;
-                        return;
-                    }
-                }
-                element.dataset.value = 0;
-                element.classList.remove("on");
-            },
-        },
-        XOR: {
-            description:
-                "Outputs 1 if the number of 1 inputs is odd, 0 otherwise.",
-            element: `
-                <div>
-                    <img src="./icons/xor-gate.png">
-                </div>
-            `,
-            functionality: (element, inputs) => {
-                if (inputs == []) {
-                    element.classList.remove("on");
-                    element.dataset.value = 0;
-                    return;
-                }
-                let total = 0;
-                for (let i = 0; i < inputs.length; i++) {
-                    if (inputs[i] > 0) {
-                        total++;
-                    }
-                }
-                if (total % 2 == 0) {
-                    element.classList.remove("on");
-                    element.dataset.value = 0;
-                } else {
-                    element.classList.add("on");
-                    element.dataset.value = 1;
-                }
-            },
-        },
-        NOT: {
-            description:
-                "Outputs 1 if the input is 0, and 0 if the input is 1, 0 otherwise.",
-            element: `
-                <div>
-                    <img src="./icons/not-gate.png">
-                </div>
-            `,
-            functionality: (element, inputs) => {
-                if (inputs == []) {
-                    element.classList.remove("on");
-                    element.dataset.value = 0;
-                    return;
-                }
-                for (let i = 0; i < inputs.length; i++) {
-                    if (inputs[i] < 1) {
-                        element.classList.add("on");
-                        element.dataset.value = 1;
-                        return;
-                    }
-                }
-                element.dataset.value = 0;
-                element.classList.remove("on");
-            },
-        },
-        Bit: {
-            description:
-                "(OR without Icon) Outputs 1 if any of the inputs are 1, 0 otherwise. Can take color input from a string,",
-            element: `
-                <div>
-                    
-                </div>
-            `,
-            functionality: (element, inputs = []) => {
-                if (inputs == []) {
-                    element.classList.remove("on");
-                    element.dataset.value = 0;
-                    return;
-                }
-                let enabled = false;
-                for (let i = 0; i < inputs.length; i++) {
-                    if (typeof inputs[i] == "string") {
-                        element.style.backgroundColor = inputs[i];
-                        continue;
-                    }
-                    if (inputs[i] > 0) {
-                        element.classList.add("on");
-                        element.dataset.value = 1;
-                        enabled = true;
-                    }
-                }
-                if (enabled) return;
-                element.dataset.value = 0;
-                element.style.backgroundColor = "transparent";
-                element.classList.remove("on");
-            },
-        },
-        Switch: {
-            description:
-                "Outputs 1 if the switch is on, 0 if the switch is off. Click it toggle the switch.",
-            element: `
-                <div>
-                    <i class="fi fi-sr-toggle-on"></i>
-                    <i class="fi fi-sr-toggle-off"></i>
-                </div>
-            `,
-            onClick: (element) => {
-                const currentValue = Number(element.dataset.value);
-                element.dataset.value = currentValue == 0 ? 1 : 0;
-                element.classList.toggle("on");
-            },
-        },
-        Button: {
-            description: "Outputs 1 for 1 tick when clicked.",
-            element: `
-                <div>
-                    <i class="fi fi-sr-rec"></i>
-                </div>
-            `,
-            onClick: (element) => {
-                element.dataset.value = 1;
-            },
-            functionality: (element) => {
-                if (element.dataset.value == 1) {
-                    element.classList.add("on");
-                    setTimeout(() => {
-                        element.dataset.value = 0;
-                    }, timePerTick);
-                    return;
-                }
-                element.classList.remove("on");
-            },
-        },
-    },
-    "Math Components": {
-        Add: {
-            description: "Outputs the sum of all the inputs.",
-            element: `
-                <div>
-                    <i class="fi fi-sr-plus"></i>
-                </div>
-            `,
-            functionality: (element, inputs) => {
-                if (inputs == [] || inputs.length < 2) {
-                    element.classList.remove("on");
-                    element.dataset.value = 0;
-                    return;
-                }
-                element.classList.add("on");
-                let total = 0;
-                for (let i = 0; i < inputs.length; i++) {
-                    total += Number(inputs[i]);
-                }
-                element.dataset.value = total;
-            },
-        },
-        Subtract: {
-            description: "Outputs the difference of all the inputs.",
-            element: `
-                <div>
-                    <i class="fi fi-sr-minus"></i>
-                </div>
-            `,
-            functionality: (element, inputs) => {
-                if (inputs == [] || inputs.length < 2) {
-                    element.classList.remove("on");
-                    element.dataset.value = 0;
-                    return;
-                }
-                element.classList.add("on");
-                let total = 0;
-                for (let i = 0; i < inputs.length; i++) {
-                    total -= Number(inputs[i]);
-                }
-                element.dataset.value = total;
-            },
-        },
-        Multiply: {
-            description: "Outputs the product of all the inputs.",
-            element: `
-                <div>
-                    <i class="fi fi-sr-x"></i>
-                </div>
-            `,
-            functionality: (element, inputs) => {
-                if (inputs == [] || inputs.length < 2) {
-                    element.classList.remove("on");
-                    element.dataset.value = 0;
-                    return;
-                }
-                element.classList.add("on");
-                let total = 1;
-                for (let i = 0; i < inputs.length; i++) {
-                    total *= Number(inputs[i]);
-                }
-                element.dataset.value = total;
-            },
-        },
-        Reciprocal: {
-            description:
-                "Outputs the reciprocal of the input. Meant to be used for division. (1/x)*5 = 5/x",
-            element: `
-                <div>
-                    <i class="fi fi-sr-reflect"></i>
-                </div>
-            `,
-            functionality: (element, inputs) => {
-                if (inputs == [] || inputs.length != 1) {
-                    element.classList.remove("on");
-                    element.dataset.value = 0;
-                    return;
-                }
-                element.classList.add("on");
-                element.dataset.value = 1 / inputs[0];
-            },
-        },
-        Number: {
-            description:
-                "Outputs the number typed into the input, or the number being inputed, 0 otherwise.",
-            element: `
-                <div>
-                    <input type="number" placeholder="#">
-                </div>
-            `,
-            functionality: (element, inputs) => {
-                if (inputs == [] || inputs.length < 1) {
-                    element.classList.remove("on");
-                    element.dataset.value =
-                        element.querySelector("input").value;
-                    return;
-                }
-                element.classList.add("on");
-                element.dataset.value = inputs[0];
-                element.querySelector("input").value = inputs[0];
-            },
-        },
-        Equal: {
-            description: "Outputs 1 if all the inputs are equal, 0 otherwise.",
-            element: `
-                <div>
-                    <i class="fi fi-sr-equals"></i>
-                </div>
-            `,
-            functionality: (element, inputs) => {
-                if (inputs == [] || inputs.length < 2) {
-                    element.classList.remove("on");
-                    element.dataset.value = 0;
-                    return;
-                }
-                let allEqual = true;
-                const first = inputs[0];
-                for (let i = 1; i < inputs.length; i++) {
-                    if (inputs[i] != first) {
-                        allEqual = false;
-                        break;
-                    }
-                }
-                element.classList[allEqual ? "add" : "remove"]("on");
-                element.dataset.value = allEqual ? 1 : 0;
-            },
-        },
-    },
-    "Display Components": {
-        Hover: {
-            description:
-                "Displays value of the input, can be a number, string, or boolean. Hover over to view the display.",
-            element: `
-                <div>
-                    <div class="display hover"></div>
-                    <i class="fi fi-sr-mouse"></i>
-                </div>
-            `,
-            functionality: (element, inputs) => {
-                if (inputs == [] || inputs.length != 1) {
-                    element.classList.remove("on");
-                    element.dataset.value = "";
-                    return;
-                }
-                element.classList.add("on");
-                element.querySelector(".display").innerHTML = inputs[0];
-                element.dataset.value = inputs[0];
-            },
-        },
-        Toggle: {
-            description:
-                "Displays value of the input, can be a number, string, or boolean. Click to toggle the display.",
-            element: `
-                <div>
-                    <div class="display hidden"></div>
-                    <i class="fi fi-sr-text"></i>
-                </div>
-            `,
-            onClick: (element) => {
-                element.querySelector(".display").classList.toggle("shown");
-            },
-            functionality: (element, inputs) => {
-                if (inputs == [] || inputs.length != 1) {
-                    element.classList.remove("on");
-                    element.dataset.value = 0;
-                    return;
-                }
-                element.classList.add("on");
-                element.querySelector(".display").innerHTML = inputs[0];
-                element.dataset.value = inputs[0];
-            },
-        },
-    },
-    "Misc Components": {
-        String: {
-            description:
-                "Outputs the string typed into the input, or the string being inputed, '' otherwise.",
-            element: `
-                <div>
-                    <input type="text" placeholder="T">
-                </div>
-            `,
-            functionality: (element, inputs) => {
-                element.dataset.value = element.querySelector("input").value;
-            },
-        },
-        Ticks: {
-            description:
-                "Outputs the number of ticks since the simulation started.",
-            element: `
-                <div>
-                    <i class="fi fi-sr-clock"></i>
-                </div>
-            `,
-            functionality: (element, inputs) => {
-                element.dataset.value = ticks + 1;
-            },
-        },
-        Tick: {
-            description:
-                "Only outputs for a single tick once it receives any 1 input.",
-            element: `
-                <div>
-                    <i class="fi fi-br-circle-1"></i>
-                </div>
-            `,
-            functionality: (element, inputs) => {
-                if (!element.dataset.value2) {
-                    element.dataset.value2 = 0;
-                }
-                if (
-                    inputs == [] ||
-                    inputs.length < 1 ||
-                    (element.dataset.value2 == 1 && element.dataset.value == 1)
-                ) {
-                    element.classList.remove("on");
-                    element.dataset.value = 0;
-                    return;
-                }
-                for (let i = 0; i < inputs.length; i++) {
-                    if (inputs[i] > 0) {
-                        if (element.dataset.value2 == 0) {
-                            element.classList.add("on");
-                            element.dataset.value = 1;
+class Component {
+    constructor({ element, values, functions, position }) {
+        this.element = element;
+        this.values = { ...values };
+        this.nextValues = { ...values };
+        this.position = position;
+        this.inputs = [];
+        this.onTick = () => {
+            if (!running) return;
+            if (functions.onTick) functions.onTick(this);
+        };
+        this.onClick = () => {
+            if (functions.onClick) functions.onClick(this);
+        };
+        this.onHover = (state) => {
+            if (!running) return;
+            if (functions.onHover) functions.onHover(this, state);
+        };
+        this.beforeTick = () => {
+            if (!running) return;
+            this.values = { ...this.nextValues };
+            if (functions.beforeTick) functions.beforeTick(this);
+        };
+        this.onEnd = () => {
+            this.values = { ...values };
+            this.nextValues = { ...values };
+            this.element.style.backgroundColor = "transparent";
+        };
+    }
+    addInput(input) {
+        this.inputs.push(input);
+    }
+    removeInput(input) {
+        this.inputs.splice(this.inputs.indexOf(input), 1);
+    }
+}
+
+const data_components = [
+    {
+        title: "Basic Components",
+        components: [
+            {
+                display: {
+                    title: "AND",
+                    description:
+                        "Outputs 1 if all of the inputs are 1, 0 otherwise.",
+                    element: `
+                        <div>
+                            <img src="./icons/and-gate.png">
+                        </div>
+                    `,
+                },
+                values: {
+                    bit: 0,
+                },
+                functions: {
+                    onTick: (component) => {
+                        let and = true;
+                        for (const input of component.inputs) {
+                            if (!input.element.isConnected) continue;
+                            if (input.values.bit < 1) {
+                                and = false;
+                                break;
+                            }
                         }
-                        element.dataset.value2 = 1;
-                        return;
-                    }
-                }
-                element.dataset.value2 = 0;
-                element.dataset.value = 0;
+                        if (and && component.inputs.length > 0) {
+                            component.element.style.backgroundColor = "#3385ff";
+                            component.nextValues.bit = 1;
+                            return;
+                        }
+                        component.element.style.backgroundColor = "transparent";
+                        component.nextValues.bit = 0;
+                    },
+                },
             },
-        },
-        Memory: {
-            description:
-                "Holds a saved value, can be set by inputting a number or string. Only outputs the saved value. To save a new value, connect a trigger input, this will tell the memory to save the new value being inputed.",
-            element: `
-                <div>
-                    <i class="fi fi-sr-memory"></i>
-                </div>
-            `,
-            functionality: (element, inputs) => {
-                if (inputs == [] || inputs.length != 2) {
-                    element.classList.remove("on");
-                    element.dataset.value = element.dataset.value;
-                    return;
-                }
-                let value, trigger;
-                for (let i = 0; i < inputs.length; i++) {
-                    if (inputs[i] === "true" || inputs[i] === "false") {
-                        trigger = inputs[i] === "true" ? true : false;
-                    } else {
-                        value = inputs[i];
-                    }
-                }
-                if (!value || !trigger) {
-                    element.classList.remove("on");
-                    element.dataset.value = element.dataset.value;
-                    return;
-                }
-                element.classList.add("on");
-                element.dataset.value = value;
+            {
+                display: {
+                    title: "OR",
+                    description:
+                        "Outputs 1 if any of the inputs are 1, 0 otherwise.",
+                    element: `
+                        <div>
+                            <img src="./icons/or-gate.png">
+                        </div>
+                    `,
+                },
+                values: {
+                    bit: 0,
+                },
+                functions: {
+                    onTick: (component) => {
+                        for (const input of component.inputs) {
+                            if (!input.element.isConnected) continue;
+                            for (const [key, value] of Object.entries(
+                                input.values
+                            )) {
+                                if (key != "bit") continue;
+                                if (value < 1) continue;
+                                component.element.style.backgroundColor =
+                                    "#3385ff";
+                                component.nextValues.bit = 1;
+                                return;
+                            }
+                        }
+                        component.element.style.backgroundColor = "transparent";
+                        component.nextValues.bit = 0;
+                    },
+                },
             },
-        },
-        Trigger: {
-            description:
-                "Outputs a boolean, true or false, depending on if any input is greater than 0.",
-            element: `
-                <div>
-                    <i class="fi fi-sr-flame"></i>
-                </div>
-            `,
-            functionality: (element, inputs) => {
-                if (inputs == [] || inputs.length < 1) {
-                    element.classList.remove("on");
-                    element.dataset.trigger = false;
-                    return;
-                }
-                for (let i = 0; i < inputs.length; i++) {
-                    if (inputs[i] > 0) {
-                        element.classList.add("on");
-                        element.dataset.trigger = true;
-                        return;
-                    }
-                }
-                element.classList.remove("on");
-                element.dataset.trigger = false;
+            {
+                display: {
+                    title: "XOR",
+                    description:
+                        "Outputs 1 if the number of inputs that are 1 is odd, 0 otherwise.",
+                    element: `
+                        <div>
+                            <img src="./icons/xor-gate.png">
+                        </div>
+                    `,
+                },
+                values: {
+                    bit: 0,
+                },
+                functions: {
+                    onTick: (component) => {
+                        let count = 0;
+                        for (const input of component.inputs) {
+                            if (!input.element.isConnected) continue;
+                            for (const [key, value] of Object.entries(
+                                input.values
+                            )) {
+                                if (key != "bit") continue;
+                                if (value < 1) continue;
+                                count++;
+                            }
+                        }
+                        if (count % 2 == 1) {
+                            component.element.style.backgroundColor = "#3385ff";
+                            component.nextValues.bit = 1;
+                            return;
+                        }
+                        component.element.style.backgroundColor = "transparent";
+                        component.nextValues.bit = 0;
+                    },
+                },
             },
-        },
+            {
+                display: {
+                    title: "NOT",
+                    description:
+                        "Outputs 1 if the input is 0, and 0 if the input is 1, 0 otherwise.",
+                    element: `
+                        <div>
+                            <img src="./icons/not-gate.png">
+                        </div>
+                    `,
+                },
+                values: {
+                    bit: 0,
+                },
+                functions: {
+                    onTick: (component) => {
+                        for (const input of component.inputs) {
+                            if (!input.element.isConnected) continue;
+                            for (const [key, value] of Object.entries(
+                                input.values
+                            )) {
+                                if (key != "bit") continue;
+                                if (value < 1) continue;
+                                component.element.style.backgroundColor =
+                                    "transparent";
+                                component.nextValues.bit = 0;
+                                return;
+                            }
+                        }
+                        if (component.inputs.length == 0) {
+                            component.element.style.backgroundColor =
+                                "transparent";
+                            component.nextValues.bit = 0;
+                            return;
+                        }
+                        component.element.style.backgroundColor = "#3385ff";
+                        component.nextValues.bit = 1;
+                    },
+                },
+            },
+            {
+                display: {
+                    title: "Bit",
+                    description:
+                        "(OR without icon) Outputs 1 if any of the inputs are 1, 0 otherwise.",
+                    element: `
+                        <div></div>
+                    `,
+                },
+                values: {
+                    bit: 0,
+                },
+                functions: {
+                    onTick: (component) => {
+                        for (const input of component.inputs) {
+                            if (!input.element.isConnected) continue;
+                            for (const [key, value] of Object.entries(
+                                input.values
+                            )) {
+                                if (key != "bit") continue;
+                                if (value < 1) continue;
+                                component.element.style.backgroundColor =
+                                    "#3385ff";
+                                component.nextValues.bit = 1;
+                                return;
+                            }
+                        }
+                        component.element.style.backgroundColor = "transparent";
+                        component.nextValues.bit = 0;
+                    },
+                },
+            },
+            {
+                display: {
+                    title: "Switch",
+                    description: "Can be toggled, outputs 1 or 0.",
+                    element: `
+                        <div>
+                            <i class="fi fi-sr-toggle-on"></i>
+                            <i class="fi fi-sr-toggle-off"></i>
+                        </div>
+                    `,
+                },
+                values: {
+                    bit: 0,
+                },
+                functions: {
+                    onClick: (component) => {
+                        if (!running) return;
+                        component.nextValues.bit =
+                            component.values.bit > 0 ? 0 : 1;
+
+                        component.element.style.backgroundColor =
+                            component.nextValues.bit > 0
+                                ? "#3385ff"
+                                : "transparent";
+                    },
+                },
+            },
+            {
+                display: {
+                    title: "Button",
+                    description: "Outputs 1 when clicked for a single tick.",
+                    element: `
+                        <div>
+                            <i class="fi fi-ss-circle"></i>
+                        </div>
+                    `,
+                },
+                values: {
+                    bit: 0,
+                },
+                functions: {
+                    onClick: (component) => {
+                        if (!running) return;
+                        component.nextValues.bit = component.values.bit = 1;
+                        component.element.style.backgroundColor = "#3385ff";
+                    },
+                    onTick: (component) => {
+                        if (component.values.bit > 0) {
+                            component.nextValues.bit = 0;
+                            component.element.style.backgroundColor =
+                                "transparent";
+                        }
+                    },
+                },
+            },
+        ],
     },
-};
+    {
+        title: "Math Components",
+        components: [
+            {
+                display: {
+                    title: "Add",
+                    description: "Outputs the sum of the inputs.",
+                    element: `
+                        <div>
+                            <i class="fi fi-br-plus"></i>
+                        </div>
+                    `,
+                },
+                values: {
+                    value: 0,
+                },
+                functions: {
+                    onTick: (component) => {
+                        let sum;
+                        for (const input of component.inputs) {
+                            if (!input.element.isConnected) continue;
+                            for (const [key, value] of Object.entries(
+                                input.values
+                            )) {
+                                if (key != "value") continue;
+                                sum = sum ? sum + value : value;
+                            }
+                        }
+                        component.element.style.backgroundColor = sum
+                            ? "#3385ff"
+                            : "transparent";
+                        component.nextValues.value = sum ? sum : 0;
+                    },
+                },
+            },
+            {
+                display: {
+                    title: "Subtract",
+                    description: "Outputs the difference of 2 inputs.",
+                    element: `
+                        <div>
+                            <i class="fi fi-br-minus"></i>
+                        </div>
+                    `,
+                },
+                values: {
+                    value: 0,
+                },
+                functions: {
+                    onTick: (component) => {
+                        let difference;
+                        let value1;
+                        let value2;
+                        for (const input of component.inputs) {
+                            if (!input.element.isConnected) continue;
+                            for (const [key, value] of Object.entries(
+                                input.values
+                            )) {
+                                if (key == "value") {
+                                    value1 = value;
+                                } else if (key == "value2") {
+                                    value2 = value;
+                                }
+                            }
+                        }
+                        if (value1 && value2) difference = value1 - value2;
+                        component.element.style.backgroundColor = difference
+                            ? "#3385ff"
+                            : "transparent";
+                        component.nextValues.value = difference
+                            ? difference
+                            : 0;
+                    },
+                },
+            },
+            {
+                display: {
+                    title: "Multiply",
+                    description: "Outputs the product of the inputs.",
+                    element: `
+                        <div>
+                            <i class="fi fi-br-x"></i>
+                        </div>
+                    `,
+                },
+                values: {
+                    value: 0,
+                },
+                functions: {
+                    onTick: (component) => {
+                        let product;
+                        for (const input of component.inputs) {
+                            if (!input.element.isConnected) continue;
+                            for (const [key, value] of Object.entries(
+                                input.values
+                            )) {
+                                if (key != "value") continue;
+                                product = product ? product * value : value;
+                            }
+                        }
+                        component.element.style.backgroundColor = product
+                            ? "#3385ff"
+                            : "transparent";
+                        component.nextValues.value = product ? product : 0;
+                    },
+                },
+            },
+            {
+                display: {
+                    title: "Divide",
+                    description: "Outputs the quotient of the 2 inputs.",
+                    element: `
+                        <div>
+                            <i class="fi fi-br-divide"></i>
+                        </div>
+                    `,
+                },
+                values: {
+                    value: 0,
+                },
+                functions: {
+                    onTick: (component) => {
+                        let quotient;
+                        let value1;
+                        let value2;
+                        for (const input of component.inputs) {
+                            if (!input.element.isConnected) continue;
+                            for (const [key, value] of Object.entries(
+                                input.values
+                            )) {
+                                if (key == "value") {
+                                    value1 = value;
+                                } else if (key == "value2") {
+                                    value2 = value;
+                                }
+                            }
+                        }
+                        if (value1 && value2) quotient = value1 / value2;
+                        component.element.style.backgroundColor = quotient
+                            ? "#3385ff"
+                            : "transparent";
+                        component.nextValues.value = quotient ? quotient : 0;
+                    },
+                },
+            },
+            {
+                display: {
+                    title: "Equal",
+                    description: "Outputs 1 if all the inputs are equal.",
+                    element: `
+                        <div>
+                            <i class="fi fi-br-equals"></i>
+                        </div>
+                    `,
+                },
+                values: {
+                    bit: 0,
+                },
+                functions: {
+                    onTick: (component) => {
+                        let first;
+                        for (const input of component.inputs) {
+                            if (!input.element.isConnected) continue;
+                            for (const [key, value] of Object.entries(
+                                input.values
+                            )) {
+                                if (key != "value") continue;
+                                if (!first) {
+                                    first = value;
+                                    continue;
+                                }
+                                if (first != value) {
+                                    component.element.style.backgroundColor =
+                                        "transparent";
+                                    component.nextValues.bit = 0;
+                                    return;
+                                }
+                            }
+                        }
+                        if (component.inputs.length == 0) return;
+                        component.element.style.backgroundColor = "#3385ff";
+                        component.nextValues.bit = 1;
+                    },
+                },
+            },
+            {
+                display: {
+                    title: "Mod",
+                    description: "Outputs the remainder of the 2 inputs.",
+                    element: `
+                        <div>
+                            <i class="fi fi-br-percentage"></i>
+                        </div>
+                    `,
+                },
+                values: {
+                    bit: 0,
+                },
+                functions: {
+                    onTick: (component) => {
+                        let remainder;
+                        let value1;
+                        let value2;
+                        for (const input of component.inputs) {
+                            if (!input.element.isConnected) continue;
+                            for (const [key, value] of Object.entries(
+                                input.values
+                            )) {
+                                if (key == "value") {
+                                    value1 = value;
+                                } else if (key == "value2") {
+                                    value2 = value;
+                                }
+                            }
+                        }
+                        if (value1 && value2) remainder = value1 % value2;
+                        component.element.style.backgroundColor = remainder
+                            ? "transparent"
+                            : component.inputs.length < 2
+                            ? "transparent"
+                            : "#3385ff";
+                        component.nextValues.value = remainder ? remainder : 0;
+                    },
+                },
+            },
+            {
+                display: {
+                    title: "Alt",
+                    description:
+                        "Outputs the same value as the input on a secondary channel. Used for things like subtraction, division, modulo, etc.",
+                    element: `
+                        <div>
+                            <i class="fi fi-br-copy"></i>
+                        </div>
+                    `,
+                },
+                values: {
+                    value2: 0,
+                },
+                functions: {
+                    onTick: (component) => {
+                        for (const input of component.inputs) {
+                            if (!input.element.isConnected) continue;
+                            for (const [key, value] of Object.entries(
+                                input.values
+                            )) {
+                                if (key != "value") continue;
+                                component.nextValues.value2 = value;
+                                component.element.style.backgroundColor =
+                                    "#3385ff";
+                                return;
+                            }
+                        }
+                        component.element.style.backgroundColor = "transparent";
+                    },
+                },
+            },
+            {
+                display: {
+                    title: "Number",
+                    description:
+                        "Outputs the number inside the input, or the value of the input from another component, 0 otherwise.",
+                    element: `
+                        <div>
+                            <input type="number" placeholder="#">
+                        </div>
+                    `,
+                },
+                values: {
+                    value: 0,
+                },
+                functions: {
+                    onTick: (component) => {
+                        component.nextValues.value = Number(
+                            component.element.querySelector("input").value
+                        );
+                        component.nextValues.value =
+                            component.nextValues.value == ""
+                                ? 0
+                                : component.nextValues.value;
+                        for (const input of component.inputs) {
+                            if (!input.element.isConnected) continue;
+                            for (const [key, value] of Object.entries(
+                                input.values
+                            )) {
+                                if (key != "value") continue;
+                                component.nextValues.value = value;
+                                component.element.querySelector("input").value =
+                                    value;
+                                component.element.style.backgroundColor =
+                                    "#3385ff";
+                                return;
+                            }
+                        }
+                        component.element.style.backgroundColor = "transparent";
+                    },
+                },
+            },
+        ],
+    },
+    {
+        title: "Display Components",
+        components: [
+            {
+                display: {
+                    title: "Hover",
+                    description:
+                        "Displays value of the input, can be a number, string, or boolean. Hover over to view the display.",
+                    element: `
+                        <div>
+                            <div class="display hover"></div>
+                            <i class="fi fi-sr-mouse"></i>
+                        </div>
+                    `,
+                },
+                values: {},
+                functions: {
+                    onTick: (component) => {
+                        if (component.inputs.length == 0) {
+                            component.element.style.backgroundColor =
+                                "transparent";
+                            return;
+                        }
+                        component.element.style.backgroundColor = "#3385ff";
+                        component.element.querySelector(".display").innerHTML =
+                            Object.values(component.inputs[0].values)[0];
+                    },
+                },
+            },
+            {
+                display: {
+                    title: "Toggle",
+                    description:
+                        "Displays value of the input, can be a number, string, or boolean. Click to toggle the display.",
+                    element: `
+                        <div>
+                            <div class="display"></div>
+                            <i class="fi fi-sr-text"></i>
+                        </div>
+                    `,
+                },
+                values: {},
+                functions: {
+                    onClick: (component) => {
+                        component.element
+                            .querySelector(".display")
+                            .classList.toggle("shown");
+                    },
+                    onTick: (component) => {
+                        if (component.inputs.length == 0) {
+                            component.element.style.backgroundColor =
+                                "transparent";
+                            return;
+                        }
+                        component.element.style.backgroundColor = "#3385ff";
+                        component.element.querySelector(".display").innerHTML =
+                            Object.values(component.inputs[0].values)[0];
+                    },
+                },
+            },
+        ],
+    },
+    {
+        title: "Misc Components",
+        components: [
+            {
+                display: {
+                    title: "String",
+                    description: "Outputs the string inside the input.",
+                    element: `
+                        <div>
+                            <input type="text" placeholder="T">
+                        </div>
+                    `,
+                },
+                values: {
+                    text: 0,
+                },
+                functions: {
+                    onTick: (component) => {
+                        component.nextValues.text =
+                            component.element.querySelector("input").value;
+                        component.nextValues.text =
+                            component.nextValues.text == ""
+                                ? ""
+                                : component.nextValues.text;
+                        for (const input of component.inputs) {
+                            if (!input.element.isConnected) continue;
+                            for (const [key, value] of Object.entries(
+                                input.values
+                            )) {
+                                if (key != "text") continue;
+                                component.nextValues.text = value;
+                                component.element.querySelector("input").value =
+                                    value;
+                                component.element.style.backgroundColor =
+                                    "#3385ff";
+                                return;
+                            }
+                        }
+                        component.element.style.backgroundColor = "transparent";
+                    },
+                },
+            },
+            {
+                display: {
+                    title: "Ticks",
+                    description:
+                        "Outputs the number of ticks since the simulation started.",
+                    element: `
+                        <div>
+                            <i class="fi fi-sr-clock"></i>
+                        </div>
+                    `,
+                },
+                values: {
+                    value: 0,
+                },
+                functions: {
+                    onTick: (component) => {
+                        component.nextValues.value = ticks + 1;
+                        component.element.style.backgroundColor = "#3385ff";
+                    },
+                },
+            },
+            {
+                display: {
+                    title: "Tick",
+                    description:
+                        "Only outputs for a single tick once it receives any 1 input.",
+                    element: `
+                        <div>
+                            <i class="fi fi-br-circle-1"></i>
+                        </div>
+                    `,
+                },
+                values: {
+                    bit: 0,
+                    bit2: 0,
+                },
+                functions: {
+                    onTick: (component) => {
+                        if (
+                            component.inputs.length < 1 ||
+                            (component.values.bit == 1 &&
+                                component.values.bit2 == 1)
+                        ) {
+                            component.element.style.backgroundColor =
+                                "transparent";
+                            component.nextValues.bit = 0;
+                            return;
+                        }
+                        for (const input of component.inputs) {
+                            if (!input.element.isConnected) continue;
+                            for (const [key, value] of Object.entries(
+                                input.values
+                            )) {
+                                if (key != "bit") continue;
+                                if (value < 1) continue;
+                                if (component.values.bit2 == 0) {
+                                    component.element.style.backgroundColor =
+                                        "#3385ff";
+                                    component.nextValues.bit = 1;
+                                }
+                                component.nextValues.bit2 = 1;
+                                return;
+                            }
+                        }
+                        component.nextValues.bit = 0;
+                        component.nextValues.bit2 = 0;
+                    },
+                },
+            },
+            {
+                display: {
+                    title: "Memory",
+                    description:
+                        "Holds a saved value, can be set by inputting a number or string. Only outputs the saved value. To save a new value, connect a bool input, this will tell the memory to save the new value being inputed.",
+                    element: `
+                        <div>
+                            <i class="fi fi-sr-memory"></i>
+                        </div>
+                    `,
+                },
+                values: {
+                    value: 0,
+                },
+                functions: {
+                    onTick: (component) => {
+                        if (component.inputs.length != 2) {
+                            component.element.style.backgroundColor =
+                                "transparent";
+                            component.nextValues.value = component.values.value;
+                            return;
+                        }
+                        let value2, trigger;
+                        for (const input of component.inputs) {
+                            if (!input.element.isConnected) continue;
+                            for (const [key, value] of Object.entries(
+                                input.values
+                            )) {
+                                if (key != "value" && key != "bool") continue;
+                                if (key == "value") {
+                                    value2 = value;
+                                }
+                                if (key == "bool") {
+                                    trigger = value;
+                                }
+                            }
+                        }
+
+                        if ((!value2 && value2 !== 0) || !trigger) {
+                            component.element.style.backgroundColor = "transparent";
+                            component.nextValues.value = component.values.value;
+                            return;
+                        }
+                        component.element.style.backgroundColor = "#3385ff";
+                        component.nextValues.value = value2;
+                    },
+                },
+            },
+            {
+                display: {
+                    title: "Boolean",
+                    description:
+                        "Outputs true if input is 1, false if input is 0.",
+                    element: `
+                        <div>
+                            <i class="fi fi-br-checkbox"></i>
+                        </div>
+                    `,
+                },
+                values: {
+                    bool: false,
+                },
+                functions: {
+                    onTick: (component) => {
+                        for (const input of component.inputs) {
+                            if (!input.element.isConnected) continue;
+                            for (const [key, value] of Object.entries(
+                                input.values
+                            )) {
+                                if (key != "bit") continue;
+                                if (value < 1) continue;
+                                component.element.style.backgroundColor =
+                                    "#3385ff";
+                                component.nextValues.bool = true;
+                                return;
+                            }
+                        }
+                        component.element.style.backgroundColor = "transparent";
+                        component.nextValues.bool = false;
+                    },
+                },
+            },
+        ],
+    },
+];
