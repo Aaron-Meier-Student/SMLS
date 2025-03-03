@@ -633,6 +633,32 @@ const data_components = [
                     },
                 },
             },
+            {
+                display: {
+                    title: "Running",
+                    description:
+                        "Displays value of the input, can be a number, string, or boolean. Will automatically toggle on every tick. Can be toggled off with click.",
+                    element: `
+                        <div>
+                            <div class="display"></div>
+                            <i class="fi fi-sr-text"></i>
+                        </div>
+                    `,
+                },
+                values: {},
+                functions: {
+                    onClick: (component) => {
+                        component.element
+                            .querySelector(".display")
+                            .classList.toggle("shown");
+                    },
+                    onTick: (component) => {
+                        component.element
+                            .querySelector(".display")
+                            .classList.add("shown");
+                    },
+                },
+            },
         ],
     },
     {
@@ -785,7 +811,8 @@ const data_components = [
                         }
 
                         if ((!value2 && value2 !== 0) || !trigger) {
-                            component.element.style.backgroundColor = "transparent";
+                            component.element.style.backgroundColor =
+                                "transparent";
                             component.nextValues.value = component.values.value;
                             return;
                         }
