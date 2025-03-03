@@ -285,10 +285,10 @@ function placementHandler(inputElement, cloneMe, componentData) {
             element.addEventListener("contextmenu", (e) => {
                 if (wireMode || running) return;
                 e.preventDefault();
-                for (const component of activeComponents) {
-                    const index = component.inputs.indexOf(element);
+                for (const component2 of activeComponents) {
+                    const index = component2.inputs.indexOf(component);
                     if (index === -1) continue;
-                    component.inputs.splice(index, 1);
+                    component2.inputs.splice(index, 1);
                 }
                 activeComponents.splice(activeComponents.indexOf(component), 1);
                 element.remove();
