@@ -596,9 +596,45 @@ const data_components = [
                                 "transparent";
                             return;
                         }
-                        component.element.style.backgroundColor = "#3385ff";
+                        let bit, value, text;
+                        for (const input of component.inputs) {
+                            if (typeof input.values.bit !== "undefined") {
+                                bit = input.values.bit;
+                            }
+                            if (typeof input.values.value !== "undefined") {
+                                value = input.values.value;
+                            }
+                            if (typeof input.values.text !== "undefined") {
+                                text = input.values.text;
+                            }
+                        }
+
+                        if (typeof text !== "undefined") {
+                            component.element.style.backgroundColor = "#3385ff";
+                            component.element.querySelector(
+                                ".display"
+                            ).innerHTML = text;
+                            return;
+                        }
+
+                        if (typeof value !== "undefined") {
+                            component.element.style.backgroundColor = "#3385ff";
+                            component.element.querySelector(
+                                ".display"
+                            ).innerHTML = value;
+                            return;
+                        }
+                        if (typeof bit !== "undefined") {
+                            component.element.style.backgroundColor = "#3385ff";
+                            component.element.querySelector(
+                                ".display"
+                            ).innerHTML = bit;
+                            return;
+                        }
                         component.element.querySelector(".display").innerHTML =
-                            Object.values(component.inputs[0].values)[0];
+                            "";
+                        component.element.style.backgroundColor = "transparent";
+                        return;
                     },
                 },
             },
@@ -627,9 +663,45 @@ const data_components = [
                                 "transparent";
                             return;
                         }
-                        component.element.style.backgroundColor = "#3385ff";
+                        let bit, value, text;
+                        for (const input of component.inputs) {
+                            if (typeof input.values.bit !== "undefined") {
+                                bit = input.values.bit;
+                            }
+                            if (typeof input.values.value !== "undefined") {
+                                value = input.values.value;
+                            }
+                            if (typeof input.values.text !== "undefined") {
+                                text = input.values.text;
+                            }
+                        }
+
+                        if (typeof text !== "undefined") {
+                            component.element.style.backgroundColor = "#3385ff";
+                            component.element.querySelector(
+                                ".display"
+                            ).innerHTML = text;
+                            return;
+                        }
+
+                        if (typeof value !== "undefined") {
+                            component.element.style.backgroundColor = "#3385ff";
+                            component.element.querySelector(
+                                ".display"
+                            ).innerHTML = value;
+                            return;
+                        }
+                        if (typeof bit !== "undefined") {
+                            component.element.style.backgroundColor = "#3385ff";
+                            component.element.querySelector(
+                                ".display"
+                            ).innerHTML = bit;
+                            return;
+                        }
                         component.element.querySelector(".display").innerHTML =
-                            Object.values(component.inputs[0].values)[0];
+                            "";
+                        component.element.style.backgroundColor = "transparent";
+                        return;
                     },
                 },
             },
@@ -656,6 +728,50 @@ const data_components = [
                         component.element
                             .querySelector(".display")
                             .classList.add("shown");
+                        if (component.inputs.length == 0) {
+                            component.element.style.backgroundColor =
+                                "transparent";
+                            return;
+                        }
+                        let bit, value, text;
+                        for (const input of component.inputs) {
+                            if (typeof input.values.bit !== "undefined") {
+                                bit = input.values.bit;
+                            }
+                            if (typeof input.values.value !== "undefined") {
+                                value = input.values.value;
+                            }
+                            if (typeof input.values.text !== "undefined") {
+                                text = input.values.text;
+                            }
+                        }
+
+                        if (typeof text !== "undefined") {
+                            component.element.style.backgroundColor = "#3385ff";
+                            component.element.querySelector(
+                                ".display"
+                            ).innerHTML = text;
+                            return;
+                        }
+
+                        if (typeof value !== "undefined") {
+                            component.element.style.backgroundColor = "#3385ff";
+                            component.element.querySelector(
+                                ".display"
+                            ).innerHTML = value;
+                            return;
+                        }
+                        if (typeof bit !== "undefined") {
+                            component.element.style.backgroundColor = "#3385ff";
+                            component.element.querySelector(
+                                ".display"
+                            ).innerHTML = bit;
+                            return;
+                        }
+                        component.element.querySelector(".display").innerHTML =
+                            "";
+                        component.element.style.backgroundColor = "transparent";
+                        return;
                     },
                 },
             },
@@ -818,6 +934,65 @@ const data_components = [
                         }
                         component.element.style.backgroundColor = "#3385ff";
                         component.nextValues.value = value2;
+                    },
+                },
+            },
+            {
+                display: {
+                    title: "Relay",
+                    description:
+                        "Holds a bit, value, and text. Will output to display or numbers only if the bit is 1. Wont output anything if the bit is 0.",
+                    element: `
+                        <div>
+                            <i class="fi fi-sr-clone"></i>
+                        </div>
+                    `,
+                },
+                values: {
+                    bit: 0,
+                    value: 0,
+                    text: "",
+                },
+                functions: {
+                    onTick: (component) => {
+                        if (component.inputs.length == 0) {
+                            component.element.style.backgroundColor =
+                                "transparent";
+                            component.nextValues.value = component.values.value;
+                            return;
+                        }
+                        let value2,
+                            text,
+                            bit = 0;
+                        for (const input of component.inputs) {
+                            if (!input.element.isConnected) continue;
+                            for (const [key, value] of Object.entries(
+                                input.values
+                            )) {
+                                if (key == "value") {
+                                    value2 = value;
+                                }
+                                if (key == "text") {
+                                    text = value;
+                                }
+                                if (key == "bit") {
+                                    bit = value;
+                                }
+                            }
+                        }
+                        if (bit == 0) {
+                            component.element.style.backgroundColor =
+                                "transparent";
+                            
+                        component.nextValues.bit = 0;
+                        component.nextValues.value = undefined;
+                        component.nextValues.text = undefined;
+                            return;
+                        }
+                        component.element.style.backgroundColor = "#3385ff";
+                        component.nextValues.bit = 1;
+                        component.nextValues.value = value2;
+                        component.nextValues.text = text;
                     },
                 },
             },
