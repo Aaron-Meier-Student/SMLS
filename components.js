@@ -22,6 +22,11 @@ class Component {
             this.values = { ...this.nextValues };
             if (functions.beforeTick) functions.beforeTick(this);
         };
+        this.onEnd = () => {
+            this.values = { ...(sepValues ? sepValues : values) };
+            this.nextValues = { ...values };
+            this.element.style.backgroundColor = "transparent";
+        }
     }
     addInput(input) {
         this.inputs.push(input);

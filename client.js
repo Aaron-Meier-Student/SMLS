@@ -61,6 +61,9 @@ async function run() {
     next = true;
     playBtn.classList.remove("disabled");
     stopBtn.classList.add("disabled");
+    for (const component of activeComponents) {
+        component.onEnd();
+    }
     ticks = 0;
     ticksTxt.innerText = `${ticks} Ticks`;
 }
