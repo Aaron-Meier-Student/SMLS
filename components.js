@@ -440,7 +440,7 @@ const data_components = [
                                 input.values
                             )) {
                                 if (key != "value") continue;
-                                if (!first) {
+                                if (!first && first !== 0) {
                                     first = value;
                                     continue;
                                 }
@@ -495,6 +495,44 @@ const data_components = [
                             ? "transparent"
                             : "#3385ff";
                         component.nextValues.value = remainder ? remainder : 0;
+                    },
+                },
+            },{
+                display: {
+                    title: "Greater",
+                    description: "Outputs 1 if the input is greater than the alt, 0 otherwise.",
+                    element: `
+                        <div>
+                            <i class="fi fi-br-greater-than"></i>
+                        </div>
+                    `,
+                },
+                values: {
+                    bit: 0,
+                },
+                functions: {
+                    onTick: (component) => {
+                        let value1 = 0;
+                        let value2 = 0;
+                        for (const input of component.inputs) {
+                            if (!input.element.isConnected) continue;
+                            for (const [key, value] of Object.entries(
+                                input.values
+                            )) {
+                                if (key == "value") {
+                                    value1 = value;
+                                } else if (key == "value2") {
+                                    value2 = value;
+                                }
+                            }
+                        }
+                        if (value1 <= value2) {
+                            component.element.style.backgroundColor = "transparent";
+                            component.nextValues.bit = 0;
+                            return;
+                        };
+                        component.element.style.backgroundColor = "#3385ff";
+                        component.nextValues.bit = 1;
                     },
                 },
             },
